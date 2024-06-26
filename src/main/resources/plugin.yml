@@ -1,0 +1,4 @@
+name: MelvuzeEventManager
+version: '${version}'
+main: me.melvuze.eventmanager.EventManager
+api-version: '1.17'
