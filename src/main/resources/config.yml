@@ -1,9 +1,13 @@
+#time to check if one minute passed(1200 ticks) for spawning events
+time-check-delay: 1200
 
 events:
   1:
     name: ""
     type: ""
     description: ""
+    run-time: "" #format 'hh:mm:ss' (18:30:00)
+    activation-command: "say event has been activated"
     location:
       coords:
         x: 0

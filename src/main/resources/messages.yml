@@ -1,0 +1,3 @@
+cant-find-events-config-section: "cant-find-events-config-section"
+cant-initialise-event-data: "Невозможно проинициализовать ивент %event_name%"
+
