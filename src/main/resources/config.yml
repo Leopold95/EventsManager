@@ -1,5 +1,7 @@
 #time to check if one minute passed(1200 ticks) for spawning events
 time-check-delay: 1200
+can-console-command: false
+time-to-nearest-events: 180 #seconds
 
 events:
   1:

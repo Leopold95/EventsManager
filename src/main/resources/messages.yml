@@ -1,3 +1,6 @@
 cant-find-events-config-section: "cant-find-events-config-section"
 cant-initialise-event-data: "Невозможно проинициализовать ивент %event_name%"
+cant-console-command: "Эту команду нельзя использовать в консоли"
 
+event:
+  nearest: "Событие %event_name% начнется через %start_delay%."

@@ -1,15 +1,16 @@
-package me.melvuze.eventmanager.core;
+package me.melvuze.eventmanager.core.events;
 
 import me.melvuze.eventmanager.EventManager;
+import me.melvuze.eventmanager.core.Config;
 import me.melvuze.eventmanager.enums.EventType;
 import me.melvuze.eventmanager.model.EventLocation;
 import me.melvuze.eventmanager.model.EventModel;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.lang.reflect.Array;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Events {
     private EventManager plugin;
@@ -20,14 +21,34 @@ public class Events {
         this.plugin = plugin;
     }
 
+    /**
+     * @return список такущих ивентов
+     */
     public ArrayList<EventModel> getEvents(){
         return events;
     }
 
+    /**
+     * Вернет список ближайших событий. Время сравнения настроивается в конфиге
+     * @return список ближайших событий
+     */
+    public List<EventModel> getNearestEvents(){
+        return events.stream()
+                .filter(e -> (e.runTime().compareTo(LocalTime.now()) == Config.getInt("time-to-nearest-events")))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Начать ивент
+     * @param event данные ивента
+     */
     public void executeEvent(EventModel event){
         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), event.activationCommand());
     }
 
+    /**
+     * Инициализирует конфиг с ивентами
+     */
     public void loadEvents(){
         events = new ArrayList<>();
 
