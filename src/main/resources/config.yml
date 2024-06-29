@@ -1,5 +1,12 @@
-animation-update-ticks: 1
 
-infection-size: 1.0
-shield-size: 0.5
-invulner-size: 1.0
+events:
+  1:
+    name: ""
+    type: ""
+    description: ""
+    location:
+      coords:
+        x: 0
+        y: 0
+        z: 0
+      world-name: ""
