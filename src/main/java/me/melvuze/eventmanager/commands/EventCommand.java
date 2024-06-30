@@ -52,23 +52,23 @@ public class EventCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if(args.length == 0)
+            return false;
+
 
         switch (args[0]){
             //event list
-            case Commands.EVENT_LIST:
-
+            case Commands.EVENT_LIST:{
                 //event list <type>
                 if(args.length == 2){
                     String eventType = args[1];
-
-
-
 
                 }
 
 
                 listEvents((Player) sender);
                 break;
+            }
         }
 
 

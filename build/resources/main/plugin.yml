@@ -2,3 +2,19 @@ name: MelvuzeEventManager
 version: '0.1-BETA'
 main: me.melvuze.eventmanager.EventManager
 api-version: '1.17'
+author: Leopold95
+
+commands:
+  event:
+    usage: "/event <args>"
+    description: Дает информацию про ивенты
+    permission: melvuzeevent
+
+
+permissions:
+  melvuzeevent.*:
+    default: op
+    description: Доступ к /event
+  melvuzeevent.list:
+    default: op
+    description: Доступ к /event open

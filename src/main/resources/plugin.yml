@@ -6,7 +6,7 @@ author: Leopold95
 
 commands:
   event:
-    usage: "/event <args>"
+    usage: "Использование: /event <args>"
     description: Дает информацию про ивенты
     permission: melvuzeevent
 
