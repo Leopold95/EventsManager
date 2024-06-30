@@ -1,6 +1,13 @@
-cant-find-events-config-section: "cant-find-events-config-section"
-cant-initialise-event-data: "Невозможно проинициализовать ивент %event_name%"
+cant-find-events-config-section: "Невозможно запустить плагин без конфигурации ивентов. Проверьте конфиг"
+cant-initialise-event-data: "Невозможно проинициализовать ивент %event_name%. Ошибка: %error%"
 cant-console-command: "Эту команду нельзя использовать в консоли"
+bad-event-types: "Невозможно запустить плагин, пока не будут настроены типы событий. Проверьте конфиг"
+
+events-total: "Вссего событие загружено: %count%"
 
 event:
   nearest: "Событие %event_name% начнется через %start_delay%."
+  bad-init-type: "Тип ивента %event_name% по времени %run_time% содержит ошибку в конфигурации. Ивет пропускается"
+
+
+  bad-init: "Поле %error_field% в конфиге содержит ошибку из-за чего событие %event_name% не было добавлено в список активных событий"

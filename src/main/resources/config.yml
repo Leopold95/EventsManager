@@ -3,11 +3,42 @@ time-check-delay: 1200
 can-console-command: false
 time-to-nearest-events: 180 #seconds
 
+event-possible-types:
+  - mist
+  - vulcan
+  - other
+
 events:
   1:
-    name: ""
-    type: ""
-    description: ""
+    name: "Мистик"
+    type: "mist"
+    description: "Мистический сундук содержащий отличный лут"
+    run-time: "" #format 'hh:mm:ss' (18:30:00)
+    activation-command: "say event has been activated"
+    location:
+      coords:
+        x: 0
+        y: 0
+        z: 0
+      world-name: ""
+
+  2:
+    name: "Событие 2"
+    type: "other"
+    description: "Описание события 2"
+    run-time: "" #format 'hh:mm:ss' (18:30:00)
+    activation-command: "say event has been activated"
+    location:
+      coords:
+        x: 0
+        y: 0
+        z: 0
+      world-name: ""
+
+  3:
+    name: "Событие 3"
+    type: "other"
+    description: "Описание события 3"
     run-time: "" #format 'hh:mm:ss' (18:30:00)
     activation-command: "say event has been activated"
     location:

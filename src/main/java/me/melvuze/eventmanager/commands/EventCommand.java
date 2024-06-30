@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -24,6 +25,23 @@ public class EventCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+
+        //event
+        if(args.length == 0){
+            return List.of(Commands.EVENT_LIST);
+        }
+
+        //event <arg>
+        if(args.length == 1){
+            String arg = args[0];
+
+            //event list
+            if(arg.equals(Commands.EVENT_LIST))
+                return plugin.events.getEventTypes();
+
+
+        }
+
         return List.of();
     }
 
@@ -36,7 +54,19 @@ public class EventCommand implements CommandExecutor, TabCompleter {
 
 
         switch (args[0]){
+            //event list
             case Commands.EVENT_LIST:
+
+                //event list <type>
+                if(args.length == 2){
+                    String eventType = args[1];
+
+
+
+
+                }
+
+
                 listEvents((Player) sender);
                 break;
         }
@@ -50,7 +80,7 @@ public class EventCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(
                     Config.getMessage("event.nearest")
                             .replace("%event_name%", event.name())
-                            .replace("%start_delay%", String.valueOf(LocalTime.now().compareTo(event.runTime())))
+                            .replace("%start_delay%", String.valueOf(Duration.between(LocalTime.now(), event.runTime()).getSeconds()))
             );
         }
     }
