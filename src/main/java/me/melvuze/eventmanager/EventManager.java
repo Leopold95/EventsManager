@@ -18,6 +18,8 @@ public final class EventManager extends JavaPlugin {
         Config.register(this);
 
         events = new Events(this);
+        timeChecker = new TimeChecker(this);
+
         events.loadEvents();
 
         getCommand(Commands.EVENT).setExecutor(new EventCommand(this));

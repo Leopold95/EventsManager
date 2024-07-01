@@ -26,11 +26,6 @@ public class EventCommand implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
 
-        //event
-        if(args.length == 0){
-            return List.of(Commands.EVENT_LIST);
-        }
-
         //event <arg>
         if(args.length == 1){
             String arg = args[0];
@@ -38,7 +33,6 @@ public class EventCommand implements CommandExecutor, TabCompleter {
             //event list
             if(arg.equals(Commands.EVENT_LIST))
                 return plugin.events.getEventTypes();
-
 
         }
 
@@ -60,10 +54,9 @@ public class EventCommand implements CommandExecutor, TabCompleter {
             //event list
             case Commands.EVENT_LIST:{
                 //event list <type>
-                if(args.length == 2){
-                    String eventType = args[1];
-
-                }
+//                if(args.length == 2){
+//                    String eventType = args[1];
+//                }
 
 
                 listEvents((Player) sender);
@@ -76,12 +69,32 @@ public class EventCommand implements CommandExecutor, TabCompleter {
     }
 
     private void listEvents(Player sender){
-        for(EventModel event:  plugin.events.getNearestEvents()){
-            sender.sendMessage(
-                    Config.getMessage("event.nearest")
-                            .replace("%event_name%", event.name())
-                            .replace("%start_delay%", String.valueOf(Duration.between(LocalTime.now(), event.runTime()).getSeconds()))
-            );
+        List<EventModel> nearest = plugin.events.getNearestEvents();
+
+        if(nearest.isEmpty()){
+            int nearestMaxTime = Config.getInt("time-to-nearest-events");
+            String message = Config.getMessage("event.no-nearest").replace("%nearest_time%", String.valueOf(nearestMaxTime));
+            sender.sendMessage(message);
+
+            return;
+        }
+
+        for(EventModel event:  nearest){
+            if(event.isGone())
+                continue;
+
+            long timeLeft = Duration.between(LocalTime.now(), event.getRunTime()).getSeconds();
+
+            if(timeLeft <= -1){
+                String message = Config.getMessage("event.active").replace("%event_name%", event.getName());
+                sender.sendMessage(message);
+                return;
+            }
+
+            String message = Config.getMessage("event.nearest")
+                    .replace("%event_name%", event.getName())
+                    .replace("%start_delay%", String.valueOf(timeLeft));
+            sender.sendMessage(message);
         }
     }
 }

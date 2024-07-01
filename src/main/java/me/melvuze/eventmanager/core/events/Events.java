@@ -20,6 +20,8 @@ public class Events {
     private ArrayList<EventModel> events;
     private List<String> possibleTypes;
 
+    private final String EVENT_SEC = "events";
+
     public Events(EventManager plugin){
         this.plugin = plugin;
     }
@@ -48,7 +50,7 @@ public class Events {
         LocalTime now = LocalTime.now();
 
         return events.stream()
-                .filter(e -> Duration.between(e.runTime(), now).getSeconds() <= Config.getInt("time-to-nearest-events"))
+                .filter(e -> Duration.between(e.getRunTime(), now).getSeconds() <= Config.getInt("time-to-nearest-events"))
                 .collect(Collectors.toList());
     }
 
@@ -57,7 +59,8 @@ public class Events {
      * @param event данные ивента
      */
     public void executeEvent(EventModel event){
-        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), event.activationCommand());
+        event.setGone(false);
+        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), event.getActivationCommand());
     }
 
     /**
@@ -68,7 +71,7 @@ public class Events {
 
         events = new ArrayList<>();
 
-        ConfigurationSection eventsSection = Config.getSection("events");
+        ConfigurationSection eventsSection = Config.getSection(EVENT_SEC);
 
         //базвовая проверка кфг секции
         if(eventsSection == null || eventsSection.getKeys(false).isEmpty()) {
@@ -82,16 +85,17 @@ public class Events {
             try {
                 EventModel model = new EventModel(
                     false,
-                    Config.getString(key + ".name"),
-                    EventType.valueOf(Config.getString(key + ".type")),
-                    Config.getString(key + ".description"),
-                    LocalTime.parse(Config.getString(key + ".run-time")),
-                    Config.getString(key + ".activation-command"),
+                    Config.getString(EVENT_SEC + "." + key + ".name"),
+                    Config.getString(EVENT_SEC + "." + key + ".type"),
+                    Config.getString(EVENT_SEC + "." + key + ".description"),
+                    Config.getInt(EVENT_SEC + "." + key + ".active-time"),
+                    LocalTime.parse(Config.getString(EVENT_SEC + "." +key + ".run-time")),
+                    Config.getString(EVENT_SEC + "." +key + ".activation-command"),
                     new EventLocation(
-                            Config.getInt(key + ".location.coords.x"),
-                            Config.getInt(key + ".location.coords.y"),
-                            Config.getInt(key + ".location.coords.z"),
-                            Config.getString(key + ".location.world-name"))
+                            Config.getInt(EVENT_SEC + "." +key + ".location.coords.x"),
+                            Config.getInt(EVENT_SEC + "." +key + ".location.coords.y"),
+                            Config.getInt(EVENT_SEC + "." +key + ".location.coords.z"),
+                            Config.getString(EVENT_SEC + "." +key + ".location.world-name"))
                 );
 
 
@@ -99,16 +103,15 @@ public class Events {
                     events.add(model);
             }
             catch (Exception exp){
+                exp.printStackTrace();
+
                 plugin.getLogger().warning(
                     Config.getMessage("cant-initialise-event-data")
-                            .replace("%event_name%", Config.getString(key + ".name")
-                            .replace("%error%", exp.getMessage())
+                            .replace("%error%", exp.getMessage()
                     )
                 );
             }
         }
-
-
 
 
         plugin.getLogger().log(Level.FINE, Config.getMessage("events-total").replace("%count%", String.valueOf(events.size())));
@@ -120,10 +123,10 @@ public class Events {
      * @return корретный ивент или нет
      */
     private boolean checkEventAccurate(EventModel model){
-        if(!possibleTypes.contains(model.type().toString())){
+        if(!possibleTypes.contains(model.getType())){
             String message = Config.getMessage("event.bad-init-type")
-                .replace("%event_name%",  model.name())
-                .replace("%run_time%% ", model.runTime().toString());
+                .replace("%event_name%",  model.getName())
+                .replace("%run_time%% ", model.getRunTime().toString());
 
             plugin.getLogger().warning(message);
             return false;

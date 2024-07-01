@@ -1,5 +1,9 @@
 #time to check if one minute passed(1200 ticks) for spawning events
 time-check-delay: 1200
+#максимальное время при котором событие будет запущено автоматески
+max-event-execute-time-difference: 60
+
+
 can-console-command: false
 time-to-nearest-events: 180 #seconds
 
@@ -13,6 +17,7 @@ events:
     name: "Мистик"
     type: "mist"
     description: "Мистический сундук содержащий отличный лут"
+    active-time: 90 #seconds
     run-time: "" #format 'hh:mm:ss' (18:30:00)
     activation-command: "say event has been activated"
     location:
@@ -26,6 +31,7 @@ events:
     name: "Событие 2"
     type: "other"
     description: "Описание события 2"
+    active-time: 90 #seconds
     run-time: "" #format 'hh:mm:ss' (18:30:00)
     activation-command: "say event has been activated"
     location:
@@ -39,6 +45,7 @@ events:
     name: "Событие 3"
     type: "other"
     description: "Описание события 3"
+    active-time: 90 #seconds
     run-time: "" #format 'hh:mm:ss' (18:30:00)
     activation-command: "say event has been activated"
     location:
