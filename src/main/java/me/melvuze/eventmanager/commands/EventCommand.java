@@ -3,6 +3,7 @@ package me.melvuze.eventmanager.commands;
 import me.melvuze.eventmanager.EventManager;
 import me.melvuze.eventmanager.core.Config;
 import me.melvuze.eventmanager.enums.Commands;
+import me.melvuze.eventmanager.enums.Permissions;
 import me.melvuze.eventmanager.model.EventModel;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,18 +26,17 @@ public class EventCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+//        //event <arg>
+//        if(args.length == 1){
+//            String arg = args[0];
+//
+//            //event list
+//            if(arg.equals(Commands.EVENT_LIST))
+//                return plugin.events.getPossibleTypes();
+//
+//        }
 
-        //event <arg>
-        if(args.length == 1){
-            String arg = args[0];
-
-            //event list
-            if(arg.equals(Commands.EVENT_LIST))
-                return plugin.events.getEventTypes();
-
-        }
-
-        return List.of();
+        return List.of(Commands.EVENT_LIST);
     }
 
     @Override
@@ -49,18 +49,34 @@ public class EventCommand implements CommandExecutor, TabCompleter {
         if(args.length == 0)
             return false;
 
+        if(!sender.hasPermission(Permissions.EVENT)){
+            sender.sendMessage(Config.getMessage("permisssion-bad"));
+            return true;
+        }
+
+
+        listNearestOrActiveEvents((Player) sender);
+
 
         switch (args[0]){
             //event list
             case Commands.EVENT_LIST:{
-                //event list <type>
+//                //event list <type>
 //                if(args.length == 2){
-//                    String eventType = args[1];
+//                    String type = args[1];
+//
+//                    if(!plugin.events.getPossibleTypes().contains(type)){
+//                        sender.sendMessage(Config.getMessage("bad-event-type"));
+//                        return true;
+//                    }
+//
+//                    listNearestOrActiveEvents((Player) sender, type);
+//                    break;
 //                }
-
-
-                listEvents((Player) sender);
-                break;
+//
+//                //event list
+//                listNearestOrActiveEvents((Player) sender);
+//                break;
             }
         }
 
@@ -68,9 +84,26 @@ public class EventCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private void listEvents(Player sender){
-        List<EventModel> nearest = plugin.events.getNearestEvents();
+    /**
+     * Выводит список ближайших ивентов для игрока
+     * @param sender игрок
+     * @param type тип события
+     */
+    private void listNearestOrActiveEvents(Player sender, String type){
+        List<EventModel> nearest = plugin.events.getNearestEvents().stream().filter(e -> e.getType().equals(type)).toList();
+        printEvents(nearest, sender);
+    }
 
+    /**
+     * Выводит список ближайших ивентов для игрока
+     * @param sender игрок
+     */
+    private void listNearestOrActiveEvents(Player sender){
+        List<EventModel> nearest = plugin.events.getNearestEvents();
+        printEvents(nearest, sender);
+    }
+
+    private void printEvents(List<EventModel> nearest, Player sender){
         if(nearest.isEmpty()){
             int nearestMaxTime = Config.getInt("time-to-nearest-events");
             String message = Config.getMessage("event.no-nearest").replace("%nearest_time%", String.valueOf(nearestMaxTime));
@@ -79,17 +112,22 @@ public class EventCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
+        LocalTime currentTime = LocalTime.now();
+
         for(EventModel event:  nearest){
             if(event.isGone())
                 continue;
 
-            long timeLeft = Duration.between(LocalTime.now(), event.getRunTime()).getSeconds();
-
-            if(timeLeft <= -1){
+            //собтыие сейчас активно
+            if(event.isActive(currentTime)){
                 String message = Config.getMessage("event.active").replace("%event_name%", event.getName());
                 sender.sendMessage(message);
-                return;
+                continue;
             }
+
+
+            //событие скоро начнется
+            long timeLeft = Duration.between(currentTime, event.getRunTime()).getSeconds();
 
             String message = Config.getMessage("event.nearest")
                     .replace("%event_name%", event.getName())

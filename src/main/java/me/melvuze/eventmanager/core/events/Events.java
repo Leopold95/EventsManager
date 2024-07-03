@@ -1,5 +1,6 @@
 package me.melvuze.eventmanager.core.events;
 
+import lombok.Getter;
 import me.melvuze.eventmanager.EventManager;
 import me.melvuze.eventmanager.core.Config;
 import me.melvuze.eventmanager.enums.EventType;
@@ -17,27 +18,15 @@ import java.util.stream.Collectors;
 public class Events {
     private EventManager plugin;
 
+    @Getter
     private ArrayList<EventModel> events;
+    @Getter
     private List<String> possibleTypes;
 
     private final String EVENT_SEC = "events";
 
     public Events(EventManager plugin){
         this.plugin = plugin;
-    }
-
-    /**
-     * @return список такущих ивентов
-     */
-    public ArrayList<EventModel> getEvents(){
-        return events;
-    }
-
-    /**
-     * @return список возможных типов ивентов
-     */
-    public List<String> getEventTypes(){
-        return possibleTypes;
     }
 
 
@@ -59,7 +48,7 @@ public class Events {
      * @param event данные ивента
      */
     public void executeEvent(EventModel event){
-        event.setGone(false);
+        event.setGone(true);
         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), event.getActivationCommand());
     }
 
@@ -84,6 +73,7 @@ public class Events {
         for(String key: eventsSection.getKeys(false)){
             try {
                 EventModel model = new EventModel(
+                    false,
                     false,
                     Config.getString(EVENT_SEC + "." + key + ".name"),
                     Config.getString(EVENT_SEC + "." + key + ".type"),

@@ -5,9 +5,18 @@ bad-event-types: "Невозможно запустить плагин, пока
 
 time-checker-task-started: "Чекер времени сервера для автоматеского запуска ивентов запущен"
 
-events-total: "Вссего событие загружено: %count%"
+events-total: "Вссего событий загружено: %count%"
+
+bad-event-type: "Событий такого типа не существует"
+
+permisssion-bad: "У вас нет прав"
 
 event:
+  #announcement plceholders
+  #%name% - имя ивента, %type% - тип ивента
+  #%description% - описание ивента
+  #%loc_x% %loc_y% %loc_z% %world_name% - позиции в мире и навазние мира
+  announcement: "Событие %name% скоро начнется."
   nearest: "Событие %event_name% начнется через %start_delay%."
   active: "Событие %event_name% уже началось!"
   no-nearest: "В пределах %nearest_time% не запланировано никаких событий"

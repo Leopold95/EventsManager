@@ -12,9 +12,10 @@ commands:
 
 
 permissions:
-  melvuzeevent.*:
+  melvuzeevent:
     default: op
     description: Доступ к /event
-  melvuzeevent.list:
-    default: op
-    description: Доступ к /event open
+
+#  melvuzeevent.list:
+#    default: op
+#    description: Доступ к /event open
