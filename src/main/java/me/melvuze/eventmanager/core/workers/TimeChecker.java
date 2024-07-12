@@ -42,16 +42,17 @@ public class TimeChecker {
      */
     private void checkEventAnnouncments(){
         for(EventModel event: plugin.events.getEvents()){
-            if(event.isWasAnnounced())
+            if(event.isWasAnnounced() || event.isGone())
                 continue;
 
-            LocalTime canAnnFrom = event.getRunTime().plusSeconds(Config.getInt("announcements.from-time"));
-            LocalTime canAnnTo = event.getRunTime().plusSeconds(Config.getInt("announcements.to-time"));
+            LocalTime canAnnFrom = LocalTime.now().plusSeconds(Config.getInt("announcements.from-time"));
+            LocalTime canAnnTo = LocalTime.now().plusSeconds(Config.getInt("announcements.to-time"));
 
             LocalTime annTime = event.getRunTime().plusSeconds(Config.getInt("announcements.time"));
 
-            if((annTime.isAfter(canAnnFrom) || annTime.equals(canAnnFrom)) &&
-                    (annTime.isBefore(canAnnTo) || annTime.equals(canAnnTo))){
+            if(annTime.isAfter(canAnnFrom) && annTime.isBefore(canAnnTo)){
+                event.setWasAnnounced(true);
+
                 for(Player player: Bukkit.getOnlinePlayers()){
                     player.sendMessage(createAnnMessage(event));
                 }
@@ -60,7 +61,6 @@ public class TimeChecker {
     }
 
     private String createAnnMessage(EventModel eventModel){
-        eventModel.setWasAnnounced(true);
         return Config.getMessage("event.announcement")
                 .replace("%name%", eventModel.getName())
                 .replace("%type%", eventModel.getType())

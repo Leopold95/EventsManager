@@ -1,20 +1,28 @@
-#time to check if one minute passed(1200 ticks) for spawning events
-time-check-delay: 1200
+#врмя итараций для проверки систояния событий, тики
+time-check-delay: 200 #10
 #максимальное время при котором событие будет запущено автоматески
-max-event-execute-time-difference: 60
+#изза того, что проверка событий может быть каждые 2 или каждые 60 секунд
+#попасть в точное время может быть сложно.
+#этот парамерт используется каждую итерацию time-check-delay
+#при проверке на анонсирование событий и их исполнение
+max-event-execute-time-difference: 20
 
-#время анонсов ивента.
-#по сколько используемый промежуток обновления ивентов нельзя предугадать
-#для анонсов используется промежуток по времени. Если при обновлении таймера ивентов
-# время аноса попадает в промежуток - ивент будет анонсирован
 announcements:
-  time: 180
-  from-time: 170
-  to-time: 230
+  #время до начале ивента за которое его нужно нанонсировать
+  time: 180      #seconds
+  #изза того, что проверка событий может быть каждые 2 или каждые 60 секунд
+  #для анонсов используется промежуток по времени. Если при итерации таймера ивентов (time-check-delay)
+  #время аноса попадает в промежуток - ивент будет анонсирован
+  #чем больше (time-check-delay) тем больше нужно ставить время промежутков
+  from-time: 20 #seconds
+  to-time: 40   #seconds
 
 can-console-command: false
+
+#время, используемое в команде для проверки ближайших ивентов от времени иполнения команды + time-to-nearest-events
 time-to-nearest-events: 180 #seconds
 
+#типы событий
 event-possible-types:
   - mist
   - vulcan
@@ -26,8 +34,8 @@ events:
     type: "mist"
     description: "Мистический сундук содержащий отличный лут"
     active-time: 90 #seconds
-    run-time: "" #format 'hh:mm:ss' (18:30:00)
-    activation-command: "say event has been activated"
+    run-time: "14:36:00" #format 'hh:mm:ss' (18:30:00)
+    activation-command: "say event 1 has been activated"
     location:
       coords:
         x: 0
@@ -37,11 +45,11 @@ events:
 
   2:
     name: "Событие 2"
-    type: "other"
+    type: "mist"
     description: "Описание события 2"
     active-time: 90 #seconds
-    run-time: "" #format 'hh:mm:ss' (18:30:00)
-    activation-command: "say event has been activated"
+    run-time: "14:37:00"#format 'hh:mm:ss' (18:30:00)
+    activation-command: "say event 2 has been activated"
     location:
       coords:
         x: 0
@@ -51,11 +59,11 @@ events:
 
   3:
     name: "Событие 3"
-    type: "other"
+    type: "mist"
     description: "Описание события 3"
     active-time: 90 #seconds
-    run-time: "" #format 'hh:mm:ss' (18:30:00)
-    activation-command: "say event has been activated"
+    run-time: "14:38:00" #format 'hh:mm:ss' (18:30:00)
+    activation-command: "say event 3 has been activated"
     location:
       coords:
         x: 0
