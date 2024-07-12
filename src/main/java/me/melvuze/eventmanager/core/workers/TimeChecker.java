@@ -29,7 +29,7 @@ public class TimeChecker {
             public void run() {
                 LocalTime currentTime = LocalTime.now();
 
-                checkEventAnnouncments();
+                checkEventAnnouncments(currentTime);
                 checkCurrentEventsToExecute(currentTime);
             }
         };
@@ -40,17 +40,19 @@ public class TimeChecker {
     /**
      * анонсирование ивентов
      */
-    private void checkEventAnnouncments(){
+    private void checkEventAnnouncments(LocalTime now){
         for(EventModel event: plugin.events.getEvents()){
-            if(event.isWasAnnounced() || event.isGone())
+            if(event.isWasAnnounced() || event.isActive(now))
                 continue;
 
-            LocalTime canAnnFrom = LocalTime.now().plusSeconds(Config.getInt("announcements.from-time"));
-            LocalTime canAnnTo = LocalTime.now().plusSeconds(Config.getInt("announcements.to-time"));
+            //LocalTime canAnnFrom = now.plusSeconds(Config.getInt("announcements.from-time"));
+            //LocalTime canAnnTo = now.plusSeconds(Config.getInt("announcements.to-time"));
 
-            LocalTime annTime = event.getRunTime().plusSeconds(Config.getInt("announcements.time"));
+            int annTime = Config.getInt("announcements.time");
 
-            if(annTime.isAfter(canAnnFrom) && annTime.isBefore(canAnnTo)){
+            LocalTime annFutureTime = event.getRunTime().plusSeconds(annTime);
+
+            if(Duration.between(now.plusSeconds(annTime), annFutureTime).getSeconds() == 1){
                 event.setWasAnnounced(true);
 
                 for(Player player: Bukkit.getOnlinePlayers()){

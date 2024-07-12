@@ -115,16 +115,12 @@ public class EventCommand implements CommandExecutor, TabCompleter {
         LocalTime currentTime = LocalTime.now();
 
         for(EventModel event:  nearest){
-            if(event.isGone())
-                continue;
-
             //собтыие сейчас активно
             if(event.isActive(currentTime)){
                 String message = Config.getMessage("event.active").replace("%event_name%", event.getName());
                 sender.sendMessage(message);
                 continue;
             }
-
 
             //событие скоро начнется
             long timeLeft = Duration.between(currentTime, event.getRunTime()).getSeconds();

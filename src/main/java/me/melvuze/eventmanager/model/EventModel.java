@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Duration;
 import java.time.LocalTime;
 
 @Getter
@@ -15,6 +16,9 @@ public class EventModel {
 
     @Setter
     private boolean wasAnnounced;
+
+    @Setter
+    private boolean wasActivated;
 
     private String name;
     private String type;
@@ -31,6 +35,6 @@ public class EventModel {
      */
     public boolean isActive(LocalTime currentTime){
         LocalTime endTime = runTime.plusSeconds(activeTime);
-        return currentTime.isAfter(runTime) && currentTime.isBefore(endTime);
+        return Duration.between(currentTime, endTime).toSeconds() <= 0;
     }
 }

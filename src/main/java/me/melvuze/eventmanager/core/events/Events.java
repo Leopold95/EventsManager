@@ -29,8 +29,6 @@ public class Events {
         this.plugin = plugin;
     }
 
-
-
     /**
      * Вернет список ближайших событий. Время сравнения настроивается в конфиге
      * @return список ближайших событий
@@ -39,8 +37,8 @@ public class Events {
         LocalTime now = LocalTime.now();
 
         return events.stream()
-                .filter(e -> Duration.between(e.getRunTime(), now).getSeconds() <= Config.getInt("time-to-nearest-events"))
-                .collect(Collectors.toList());
+            .filter(e -> Duration.between(now, e.getRunTime()).getSeconds() <= Config.getInt("time-to-nearest-events"))
+            .collect(Collectors.toList());
     }
 
     /**
@@ -48,7 +46,10 @@ public class Events {
      * @param event данные ивента
      */
     public void executeEvent(EventModel event){
-        event.setGone(true);
+        if(event.isWasActivated())
+            return;
+
+        event.setWasActivated(true);
         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), event.getActivationCommand());
     }
 
@@ -73,6 +74,7 @@ public class Events {
         for(String key: eventsSection.getKeys(false)){
             try {
                 EventModel model = new EventModel(
+                    false,
                     false,
                     false,
                     Config.getString(EVENT_SEC + "." + key + ".name"),
