@@ -3,6 +3,7 @@ package me.melvuze.eventmanager.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import me.melvuze.eventmanager.core.Time;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -10,7 +11,6 @@ import java.time.LocalTime;
 @Getter
 @AllArgsConstructor
 public class EventModel {
-
     @Setter
     private boolean isGone;
 
@@ -35,6 +35,6 @@ public class EventModel {
      */
     public boolean isActive(LocalTime currentTime){
         LocalTime endTime = runTime.plusSeconds(activeTime);
-        return Duration.between(currentTime, endTime).toSeconds() <= 0;
+        return currentTime.isBefore(runTime) && currentTime.isAfter(endTime);
     }
 }

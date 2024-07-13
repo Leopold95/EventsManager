@@ -16,7 +16,7 @@ event:
   #%name% - имя ивента, %type% - тип ивента
   #%description% - описание ивента
   #%loc_x% %loc_y% %loc_z% %world_name% - позиции в мире и навазние мира
-  announcement: "Событие %name% скоро начнется."
+  announcement: "%name% начнется через %time%."
   nearest: "До %event_name% осталось %start_delay%."
   active: "Событие %event_name% сейчас активно!"
   no-nearest: "В пределах %nearest_time% не запланировано никаких событий"

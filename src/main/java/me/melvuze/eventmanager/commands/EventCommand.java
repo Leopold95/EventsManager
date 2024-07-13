@@ -125,6 +125,9 @@ public class EventCommand implements CommandExecutor, TabCompleter {
             //событие скоро начнется
             long timeLeft = Duration.between(currentTime, event.getRunTime()).getSeconds();
 
+            if(timeLeft <= -1)
+                continue;
+
             String message = Config.getMessage("event.nearest")
                     .replace("%event_name%", event.getName())
                     .replace("%start_delay%", String.valueOf(timeLeft));

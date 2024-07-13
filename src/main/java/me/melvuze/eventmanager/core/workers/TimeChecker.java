@@ -3,12 +3,14 @@ package me.melvuze.eventmanager.core.workers;
 import me.melvuze.eventmanager.EventManager;
 import me.melvuze.eventmanager.abstraction.RepeatingTask;
 import me.melvuze.eventmanager.core.Config;
+import me.melvuze.eventmanager.core.Time;
 import me.melvuze.eventmanager.model.EventModel;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -45,24 +47,22 @@ public class TimeChecker {
             if(event.isWasAnnounced() || event.isActive(now))
                 continue;
 
-            //LocalTime canAnnFrom = now.plusSeconds(Config.getInt("announcements.from-time"));
-            //LocalTime canAnnTo = now.plusSeconds(Config.getInt("announcements.to-time"));
-
             int annTime = Config.getInt("announcements.time");
 
-            LocalTime annFutureTime = event.getRunTime().plusSeconds(annTime);
-
-            if(Duration.between(now.plusSeconds(annTime), annFutureTime).getSeconds() == 1){
+            if(Time.intoOneSecRange(now.plusSeconds(annTime), event.getRunTime())){
                 event.setWasAnnounced(true);
 
                 for(Player player: Bukkit.getOnlinePlayers()){
-                    player.sendMessage(createAnnMessage(event));
+                    player.sendMessage(createAnnMessage(event, annTime));
                 }
             }
         }
     }
 
-    private String createAnnMessage(EventModel eventModel){
+
+
+
+    private String createAnnMessage(EventModel eventModel, long secondsToStart){
         return Config.getMessage("event.announcement")
                 .replace("%name%", eventModel.getName())
                 .replace("%type%", eventModel.getType())
@@ -70,19 +70,20 @@ public class TimeChecker {
                 .replace("%loc_x%", String.valueOf(eventModel.getLocation().x()))
                 .replace("%loc_y%", String.valueOf(eventModel.getLocation().y()))
                 .replace("%loc_z%", String.valueOf(eventModel.getLocation().z()))
-                .replace("%world_name%", eventModel.getLocation().worldName());
+                .replace("%world_name%", eventModel.getLocation().worldName())
+                .replace("%time%", String.valueOf(secondsToStart));
     }
 
     /**
      * Запуск такущего ивента
      */
     private void checkCurrentEventsToExecute(LocalTime currentTime){
-        boolean currentTimeEventExists = plugin.events.getEvents().stream().anyMatch(event -> predicate(event, currentTime));
+        boolean currentTimeEventExists = plugin.events.getEvents().stream().anyMatch(e -> Time.intoOneSecRange(currentTime, e.getRunTime()));
 
         if(!currentTimeEventExists)
             return;
 
-        List<EventModel> eventOption = plugin.events.getEvents().stream().filter(event -> predicate(event, currentTime)).toList();
+        List<EventModel> eventOption = plugin.events.getEvents().stream().filter(e -> Time.intoOneSecRange(currentTime, e.getRunTime())).toList();
 
         if(eventOption.isEmpty())
             return;
@@ -90,20 +91,5 @@ public class TimeChecker {
         for(EventModel model: eventOption){
             plugin.events.executeEvent(model);
         }
-    }
-
-    /**
-     * предикат для текущего ивента
-     * @param event
-     * @param currentTime
-     * @return
-     */
-    private boolean predicate(EventModel event, LocalTime currentTime){
-        long difference = Duration.between(event.getRunTime(), currentTime).toSeconds();
-
-        if(difference <= -1)
-            return false;
-
-        return difference <= maxTime;
     }
 }

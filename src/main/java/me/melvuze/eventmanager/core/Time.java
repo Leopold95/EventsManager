@@ -10,4 +10,8 @@ public class Time {
     public static int localTimeToSeconds(LocalTime localTime){
         return localTime.getSecond();
     }
+
+    public static boolean intoOneSecRange(LocalTime now, LocalTime time){
+        return time.equals(now) || (time.isAfter(now) && time.isBefore(now.plusSeconds(1)));
+    }
 }
